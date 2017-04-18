@@ -1,23 +1,41 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+/// <reference types="node" />
 import { EventEmitter } from 'events';
-import { ReceiverLink as Amqp10ReceiverLink } from 'amqp10';
 import { results, Receiver, Message } from 'azure-iot-common';
-
-import AmqpMessage = require('./amqp_message');
-
-declare class AmqpReceiver extends EventEmitter implements Receiver {
+import { ReceiverLink as Amqp10ReceiverLink } from 'amqp10';
+/**
+ * @class            module:azure-iot-amqp-base.AmqpReceiver
+ * @classdesc        The `AmqpReceiver` class is used to receive and settle messages.
+ *
+ * @param {Object}   amqpReceiver   The Receiver object that is created by the client using the `node-amqp10` library.
+ *
+ * @fires module:azure-iot-amqp-base.AmqpReceiver#message
+ * @fires module:azure-iot-amqp-base.AmqpReceiver#errorReceived
+ */
+export declare class AmqpReceiver extends EventEmitter implements Receiver {
+    private _listeners;
+    private _listenersInitialized;
+    private _amqpReceiver;
     constructor(amqpReceiver: Amqp10ReceiverLink);
-
-    complete(message: AmqpMessage, done?: (err: Error, result?: results.MessageCompleted) => void): void;
-    abandon(message: AmqpMessage, done?: (err: Error, result?: results.MessageAbandoned) => void): void;
-    reject(message: AmqpMessage, done?: (err: Error, result?: results.MessageRejected) => void): void;
-
-    on(type: 'message', func: (msg: Message) => void): this;
-    on(type: 'errorReceived', func: (err: Error) => void): this;
-
-    on(type: string, func: Function): this;
+    /**
+     * @method          module:azure-iot-amqp-base.AmqpReceiver#complete
+     * @description     Sends a completion feedback message to the service.
+     * @param {AmqpMessage}   message  The message that is being settled.
+     */
+    complete(message: Message, done?: (err: Error, result?: results.MessageCompleted) => void): void;
+    /**
+     * @method          module:azure-iot-amqp-base.AmqpReceiver#abandon
+     * @description     Sends an abandon/release feedback message
+     * @param {AmqpMessage}   message  The message that is being settled.
+     */
+    abandon(message: Message, done?: (err: Error, result?: results.MessageAbandoned) => void): void;
+    /**
+     * @method          module:azure-iot-amqp-base.AmqpReceiver#reject
+     * @description     Sends an reject feedback message
+     * @param {AmqpMessage}   message  The message that is being settled.
+     */
+    reject(message: Message, done?: (err: Error, result?: results.MessageRejected) => void): void;
+    private _onAmqpErrorReceived(err);
+    private _onAmqpMessage(amqpMessage);
+    private _setupAmqpReceiverListeners();
+    private _removeAmqpReceiverListeners();
 }
-
-export = AmqpReceiver;
