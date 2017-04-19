@@ -11,7 +11,7 @@
  * @augments {Error}
  */
 export class ArgumentError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'ArgumentError';
     this.message = message;
@@ -26,7 +26,7 @@ export class ArgumentError extends Error {
  * @augments {Error}
  */
 export class DeviceMaximumQueueDepthExceededError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'DeviceMaximumQueueDepthExceededError';
     this.message = message;
@@ -41,7 +41,7 @@ export class DeviceMaximumQueueDepthExceededError extends Error {
  * @augments {Error}
  */
 export class DeviceNotFoundError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'DeviceNotFoundError';
     this.message = message;
@@ -56,7 +56,7 @@ export class DeviceNotFoundError extends Error {
  * @augments {Error}
  */
 export class FormatError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'FormatError';
     this.message = message;
@@ -71,7 +71,7 @@ export class FormatError extends Error {
  * @augments {Error}
  */
 export class UnauthorizedError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'UnauthorizedError';
     this.message = message;
@@ -80,7 +80,7 @@ export class UnauthorizedError extends Error {
 }
 
 export class NotImplementedError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'NotImplementedError';
     this.message = message;
@@ -89,7 +89,7 @@ export class NotImplementedError extends Error {
 }
 
 export class NotConnectedError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'NotConnectedError';
     this.message = message;
@@ -98,7 +98,7 @@ export class NotConnectedError extends Error {
 }
 
 export class IotHubQuotaExceededError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'IotHubQuotaExceededError';
     this.message = message;
@@ -108,7 +108,7 @@ export class IotHubQuotaExceededError extends Error {
 
 
 export class MessageTooLargeError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'MessageTooLargeError';
     this.message = message;
@@ -117,7 +117,7 @@ export class MessageTooLargeError extends Error {
 }
 
 export class InternalServerError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'InternalServerError';
     this.message = message;
@@ -126,7 +126,7 @@ export class InternalServerError extends Error {
 }
 
 export class ServiceUnavailableError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'ServiceUnavailableError';
     this.message = message;
@@ -135,7 +135,7 @@ export class ServiceUnavailableError extends Error {
 }
 
 export class IotHubNotFoundError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'IotHubNotFoundError';
     this.message = message;
@@ -144,7 +144,7 @@ export class IotHubNotFoundError extends Error {
 }
 
 export class JobNotFoundError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'JobNotFoundError';
     this.message = message;
@@ -153,7 +153,7 @@ export class JobNotFoundError extends Error {
 }
 
 export class TooManyDevicesError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'TooManyDevicesError';
     this.message = message;
@@ -162,7 +162,7 @@ export class TooManyDevicesError extends Error {
 }
 
 export class ThrottlingError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'ThrottlingError';
     this.message = message;
@@ -171,7 +171,7 @@ export class ThrottlingError extends Error {
 }
 
 export class DeviceAlreadyExistsError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'DeviceAlreadyExistsError';
     this.message = message;
@@ -180,7 +180,7 @@ export class DeviceAlreadyExistsError extends Error {
 }
 
 export class InvalidEtagError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'InvalidEtagError';
     this.message = message;
@@ -195,7 +195,7 @@ export class InvalidEtagError extends Error {
  * @augments {Error}
  */
 export class TimeoutError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'TimeoutError';
     this.message = message;
@@ -210,7 +210,7 @@ export class TimeoutError extends Error {
  * @augments {Error}
  */
 export class BadDeviceResponseError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'BadDeviceResponseError';
     this.message = message;
@@ -226,7 +226,7 @@ export class BadDeviceResponseError extends Error {
  */
 
 export class GatewayTimeoutError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'GatewayTimeoutError';
     this.message = message;
@@ -241,7 +241,7 @@ export class GatewayTimeoutError extends Error {
  * @augments {Error}
  */
 export class DeviceTimeoutError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'DeviceTimeoutError';
     this.message = message;

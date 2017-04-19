@@ -76,7 +76,7 @@ export declare class Connected implements Result {
 export declare class Disconnected implements Result {
     transportObj?: any;
     reason: string;
-    constructor(transportObj: any, reason: string);
+    constructor(transportObj?: any, reason?: string);
 }
 /**
  * @class       module:azure-iot-common.TransportConfigured

@@ -95,7 +95,7 @@ export class Connected implements Result {
 export class Disconnected implements Result {
   transportObj?: any;
   reason: string;
-  constructor(transportObj: any, reason: string) {
+  constructor(transportObj?: any, reason?: string) {
     this.transportObj = transportObj;
     this.reason = reason;
   }

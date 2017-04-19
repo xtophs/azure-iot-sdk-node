@@ -6,6 +6,7 @@ export interface ConnectionString {
     DeviceId?: string;
     SharedAccessKey?: string;
     GatewayHostName?: string;
+    x509?: string;
 }
 export declare namespace ConnectionString {
     function parse(source: string, requiredFields?: string[]): ConnectionString;

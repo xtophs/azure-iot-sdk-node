@@ -9,7 +9,7 @@
  * @augments {Error}
  */
 export declare class ArgumentError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.DeviceMaximumQueueDepthExceededError
@@ -18,7 +18,7 @@ export declare class ArgumentError extends Error {
  * @augments {Error}
  */
 export declare class DeviceMaximumQueueDepthExceededError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.DeviceNotFoundError
@@ -27,7 +27,7 @@ export declare class DeviceMaximumQueueDepthExceededError extends Error {
  * @augments {Error}
  */
 export declare class DeviceNotFoundError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.FormatError
@@ -36,7 +36,7 @@ export declare class DeviceNotFoundError extends Error {
  * @augments {Error}
  */
 export declare class FormatError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.UnauthorizedError
@@ -45,43 +45,43 @@ export declare class FormatError extends Error {
  * @augments {Error}
  */
 export declare class UnauthorizedError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class NotImplementedError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class NotConnectedError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class IotHubQuotaExceededError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class MessageTooLargeError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class InternalServerError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class ServiceUnavailableError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class IotHubNotFoundError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class JobNotFoundError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class TooManyDevicesError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class ThrottlingError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class DeviceAlreadyExistsError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 export declare class InvalidEtagError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.TimeoutError
@@ -90,7 +90,7 @@ export declare class InvalidEtagError extends Error {
  * @augments {Error}
  */
 export declare class TimeoutError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.BadDeviceResponseError
@@ -99,7 +99,7 @@ export declare class TimeoutError extends Error {
  * @augments {Error}
  */
 export declare class BadDeviceResponseError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.GatewayTimeoutError
@@ -108,7 +108,7 @@ export declare class BadDeviceResponseError extends Error {
  * @augments {Error}
  */
 export declare class GatewayTimeoutError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }
 /**
  * @class       module:azure-iot-common.DeviceTimeoutError
@@ -117,5 +117,5 @@ export declare class GatewayTimeoutError extends Error {
  * @augments {Error}
  */
 export declare class DeviceTimeoutError extends Error {
-    constructor(message: string);
+    constructor(message?: string);
 }

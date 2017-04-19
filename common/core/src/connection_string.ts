@@ -12,6 +12,7 @@ export interface ConnectionString {
   DeviceId?: string;
   SharedAccessKey?: string;
   GatewayHostName?: string;
+  x509?: string;
 }
 
 export namespace ConnectionString {
