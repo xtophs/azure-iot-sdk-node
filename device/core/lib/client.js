@@ -76,20 +76,19 @@ var Client = (function (_super) {
                 });
             }
         });
-        function _closeTransport(closeCallback) {
-            var _this = this;
-            function onDisconnected(err, result) {
-                this._fsm.transition('disconnected');
+        var _closeTransport = function (closeCallback) {
+            var onDisconnected = function (err, result) {
+                _this._fsm.transition('disconnected');
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_056: [The `close` method shall not throw if the `closeCallback` is not passed.]*/
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_055: [The `close` method shall call the `closeCallback` function when done with either a single Error object if it failed or null and a results.Disconnected object if successful.]*/
                 safeCallback(closeCallback, err, result);
+            };
+            if (_this._sasRenewalTimeout) {
+                clearTimeout(_this._sasRenewalTimeout);
             }
-            if (this._sasRenewalTimeout) {
-                clearTimeout(this._sasRenewalTimeout);
-            }
-            if (this._isImplementedInTransport('disconnect')) {
+            if (_this._isImplementedInTransport('disconnect')) {
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_001: [The `close` function shall call the transport's `disconnect` function if it exists.]*/
-                this._transport.disconnect(function (disconnectError, disconnectResult) {
+                _this._transport.disconnect(function (disconnectError, disconnectResult) {
                     /*Codes_SRS_NODE_DEVICE_CLIENT_16_046: [The `close` method shall remove the listener that has been attached to the transport `disconnect` event.]*/
                     _this._transport.removeListener('disconnect', _this._disconnectHandler);
                     onDisconnected(disconnectError, disconnectResult);
@@ -98,7 +97,7 @@ var Client = (function (_super) {
             else {
                 onDisconnected(null, new azure_iot_common_1.results.Disconnected());
             }
-        }
+        };
         _this._fsm = new machina.Fsm({
             namespace: 'device-client',
             initialState: 'disconnected',
@@ -226,15 +225,15 @@ var Client = (function (_super) {
                     },
                     updateSharedAccessSignature: function (sharedAccessSignature, updateSasCallback) {
                         _this._fsm.transition('updating_sas');
-                        function safeUpdateSasCallback(err, result) {
+                        var safeUpdateSasCallback = function (err, result) {
                             if (err) {
-                                this._fsm.transition('disconnected');
+                                _this._fsm.transition('disconnected');
                             }
                             else {
-                                this._fsm.transition('connected');
+                                _this._fsm.transition('connected');
                             }
                             safeCallback(updateSasCallback, err, result);
-                        }
+                        };
                         _this.blobUploadClient.updateSharedAccessSignature(sharedAccessSignature);
                         if (_this._twin) {
                             _this._twin.updateSharedAccessSignature();

@@ -90,13 +90,13 @@ export class Client extends EventEmitter {
       }
     });
 
-    function _closeTransport(closeCallback: (err?: Error, result?: any) => void): void {
-      function onDisconnected(err?: Error, result?: any): void {
+    const _closeTransport = (closeCallback: (err?: Error, result?: any) => void): void => {
+      const onDisconnected = (err?: Error, result?: any): void => {
         this._fsm.transition('disconnected');
         /*Codes_SRS_NODE_DEVICE_CLIENT_16_056: [The `close` method shall not throw if the `closeCallback` is not passed.]*/
         /*Codes_SRS_NODE_DEVICE_CLIENT_16_055: [The `close` method shall call the `closeCallback` function when done with either a single Error object if it failed or null and a results.Disconnected object if successful.]*/
         safeCallback(closeCallback, err, result);
-      }
+      };
 
       if (this._sasRenewalTimeout) {
         clearTimeout(this._sasRenewalTimeout);
@@ -112,7 +112,7 @@ export class Client extends EventEmitter {
       } else {
         onDisconnected(null, new results.Disconnected());
       }
-    }
+    };
 
     this._fsm = new machina.Fsm({
       namespace: 'device-client',
@@ -239,14 +239,14 @@ export class Client extends EventEmitter {
           },
           updateSharedAccessSignature: (sharedAccessSignature, updateSasCallback) => {
             this._fsm.transition('updating_sas');
-            function safeUpdateSasCallback(err?: Error, result?: any): void {
+            const safeUpdateSasCallback = (err?: Error, result?: any): void => {
               if (err) {
                 this._fsm.transition('disconnected');
               } else {
                 this._fsm.transition('connected');
               }
               safeCallback(updateSasCallback, err, result);
-            }
+            };
 
             this.blobUploadClient.updateSharedAccessSignature(sharedAccessSignature);
 

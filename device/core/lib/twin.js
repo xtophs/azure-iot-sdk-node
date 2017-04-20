@@ -27,51 +27,6 @@ var Twin = (function (_super) {
         _this._rid = 4200; // arbitrary starting value.
         return _this;
     }
-    /**
-     * @method          module:azure-iot-device.Twin#fromDeviceClient
-     * @description     Get a Twin object for the given client connection
-     *
-     * @param {Object}      client  The [client]{@link module:azure-iot-device.Client} object that this Twin object is associated with.
-     *
-     * @param {Function}      done  the callback to be invoked when this function completes.
-     *
-     * @throws {ReferenceError}   One of the required parameters is falsy
-     */
-    Twin.prototype.fromDeviceClient = function (client, done) {
-        /* Codes_SRS_NODE_DEVICE_TWIN_18_002: [** `fromDeviceclient` shall throw `ReferenceError` if the `client` object is falsy **]** */
-        if (!client) {
-            throw new ReferenceError('client parameter is required');
-        }
-        /* Codes_SRS_NODE_DEVICE_TWIN_18_030: [** `fromDeviceclient` shall throw `ReferenceError` if the `done` argument is falsy **]** */
-        if (!done) {
-            throw new ReferenceError('done parameter is required');
-        }
-        /* Codes_SRS_NODE_DEVICE_TWIN_18_028: [** if `fromDeviceClient` has previously been called for this client, it shall perform a GET operation and return the same object **]** */
-        if (client._twin) {
-            client._twin._getPropertiesFromService(function (err) {
-                done(err, client._twin);
-            });
-        }
-        else {
-            /* Codes_SRS_NODE_DEVICE_TWIN_18_029: [** if `fromDeviceClient` is called with 2 different `client`s, it shall return 2 unique `Twin` objects **]** */
-            /* Codes_SRS_NODE_DEVICE_TWIN_18_003: [** `fromDeviceClient` shall allocate a new `Twin` object **]**  */
-            var twin_1 = new Twin(client);
-            twin_1.on('newListener', twin_1._handleNewListener.bind(twin_1));
-            /* Codes_SRS_NODE_DEVICE_TWIN_18_005: [** If the protocol does not contain a `getTwinReceiver` method, `fromDeviceClient` shall throw a `NotImplementedError` error **]**  */
-            if (!client._transport.getTwinReceiver) {
-                throw new azure_iot_common_1.errors.NotImplementedError('transport does not support Twin');
-            }
-            else {
-                client._twin = twin_1;
-                client.on('_connected', function () {
-                    twin_1._connectSubscribeAndGetProperties(function () {
-                        debug('Twin reconnected');
-                    });
-                });
-                twin_1._connectSubscribeAndGetProperties(done);
-            }
-        }
-    };
     Twin.prototype.updateSharedAccessSignature = function () {
         this._receiver.removeAllListeners(Twin.responseEvent);
         this._receiver.removeAllListeners(Twin.postEvent);
@@ -285,7 +240,58 @@ var Twin = (function (_super) {
             }
         }
     };
+    /**
+     * @method          module:azure-iot-device.Twin#fromDeviceClient
+     * @description     Get a Twin object for the given client connection
+     *
+     * @param {Object}      client  The [client]{@link module:azure-iot-device.Client} object that this Twin object is associated with.
+     *
+     * @param {Function}      done  the callback to be invoked when this function completes.
+     *
+     * @throws {ReferenceError}   One of the required parameters is falsy
+     */
+    Twin.fromDeviceClient = function (client, done) {
+        /* Codes_SRS_NODE_DEVICE_TWIN_18_002: [** `fromDeviceclient` shall throw `ReferenceError` if the `client` object is falsy **]** */
+        if (!client) {
+            throw new ReferenceError('client parameter is required');
+        }
+        /* Codes_SRS_NODE_DEVICE_TWIN_18_030: [** `fromDeviceclient` shall throw `ReferenceError` if the `done` argument is falsy **]** */
+        if (!done) {
+            throw new ReferenceError('done parameter is required');
+        }
+        /* Codes_SRS_NODE_DEVICE_TWIN_18_028: [** if `fromDeviceClient` has previously been called for this client, it shall perform a GET operation and return the same object **]** */
+        if (client._twin) {
+            client._twin._getPropertiesFromService(function (err) {
+                done(err, client._twin);
+            });
+        }
+        else {
+            /* Codes_SRS_NODE_DEVICE_TWIN_18_029: [** if `fromDeviceClient` is called with 2 different `client`s, it shall return 2 unique `Twin` objects **]** */
+            /* Codes_SRS_NODE_DEVICE_TWIN_18_003: [** `fromDeviceClient` shall allocate a new `Twin` object **]**  */
+            var twin_1 = new Twin(client);
+            twin_1.on('newListener', twin_1._handleNewListener.bind(twin_1));
+            /* Codes_SRS_NODE_DEVICE_TWIN_18_005: [** If the protocol does not contain a `getTwinReceiver` method, `fromDeviceClient` shall throw a `NotImplementedError` error **]**  */
+            if (!client._transport.getTwinReceiver) {
+                throw new azure_iot_common_1.errors.NotImplementedError('transport does not support Twin');
+            }
+            else {
+                client._twin = twin_1;
+                client.on('_connected', function () {
+                    twin_1._connectSubscribeAndGetProperties(function () {
+                        debug('Twin reconnected');
+                    });
+                });
+                twin_1._connectSubscribeAndGetProperties(done);
+            }
+        }
+    };
     return Twin;
 }(events_1.EventEmitter));
+Twin.timeout = 120000;
+Twin.errorEvent = 'error';
+Twin.subscribedEvent = 'subscribed';
+Twin.responseEvent = 'response';
+Twin.postEvent = 'post';
+Twin.desiredPath = 'properties.desired';
 exports.Twin = Twin;
 //# sourceMappingURL=twin.js.map
