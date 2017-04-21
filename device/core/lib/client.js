@@ -209,7 +209,7 @@ var Client = (function (_super) {
                             });
                         }
                         else {
-                            throw new azure_iot_common_1.errors.NotImplementedError('sendEvent is not supported with ' + _this._transport.constructor.name);
+                            throw new azure_iot_common_1.errors.NotImplementedError('sendEvent is not supported with this transport');
                         }
                     },
                     sendEventBatch: function (msgBatch, sendEventBatchCallback) {
@@ -220,7 +220,7 @@ var Client = (function (_super) {
                             });
                         }
                         else {
-                            throw new azure_iot_common_1.errors.NotImplementedError('sendEventBatch is not supported with ' + _this._transport.constructor.name);
+                            throw new azure_iot_common_1.errors.NotImplementedError('sendEventBatch is not supported with this transport');
                         }
                     },
                     updateSharedAccessSignature: function (sharedAccessSignature, updateSasCallback) {
@@ -245,7 +245,7 @@ var Client = (function (_super) {
                                 safeUpdateSasCallback(err);
                             }
                             else {
-                                debug('sas token updated: ' + result.constructor.name + ' needToReconnect: ' + result.needToReconnect);
+                                debug('sas token updated; needToReconnect: ' + result.needToReconnect);
                                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_033: [The updateSharedAccessSignature method shall reconnect the transport to the IoTHub service if it was connected before before the method is clled.]*/
                                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_034: [The `updateSharedAccessSignature` method shall not reconnect when the 'needToReconnect' property of the result argument of the callback is false.]*/
                                 if (result.needToReconnect) {
@@ -281,7 +281,7 @@ var Client = (function (_super) {
                             });
                         }
                         else {
-                            throw new azure_iot_common_1.errors.NotImplementedError('complete is not supported with ' + _this._transport.constructor.name);
+                            throw new azure_iot_common_1.errors.NotImplementedError('complete is not supported with this transport');
                         }
                     },
                     abandon: function (message, abandonCallback) {
@@ -292,7 +292,7 @@ var Client = (function (_super) {
                             });
                         }
                         else {
-                            throw new azure_iot_common_1.errors.NotImplementedError('abandon is not supported with ' + _this._transport.constructor.name);
+                            throw new azure_iot_common_1.errors.NotImplementedError('abandon is not supported with this transport');
                         }
                     },
                     reject: function (message, rejectCallback) {
@@ -303,7 +303,7 @@ var Client = (function (_super) {
                             });
                         }
                         else {
-                            throw new azure_iot_common_1.errors.NotImplementedError('reject is not supported with ' + _this._transport.constructor.name);
+                            throw new azure_iot_common_1.errors.NotImplementedError('reject is not supported with this transport');
                         }
                     },
                     startMessageReceiver: function () {

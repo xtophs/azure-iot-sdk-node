@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 import { results, Message } from 'azure-iot-common';
 import { BlobUploadClient } from './blob_upload';
 import { Twin } from './twin';
+import { Transport } from './interfaces';
 /**
  * @class           module:azure-iot-device.Client
  * @classdesc       Creates an IoT Hub device client. Normally, consumers will
@@ -18,7 +19,7 @@ import { Twin } from './twin';
  */
 export declare class Client extends EventEmitter {
     static sasRenewalInterval: number;
-    _transport: any;
+    _transport: Transport;
     _twin: Twin;
     private _connectionString;
     private _useAutomaticRenewal;
@@ -28,7 +29,7 @@ export declare class Client extends EventEmitter {
     private _fsm;
     private _disconnectHandler;
     private blobUploadClient;
-    constructor(transport: any, connStr?: string, blobUploadClient?: BlobUploadClient);
+    constructor(transport: Transport, connStr?: string, blobUploadClient?: BlobUploadClient);
     /**
      * @method            module:azure-iot-device.Client#onDeviceMethod
      * @description       Registers the `callback` to be invoked when a

@@ -1,6 +1,7 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-declare function translateError(message: string, body: any, response: { statusCode: number }): Error;
-
-export = translateError;
+/// <reference types="node" />
+import { IncomingMessage } from 'http';
+export declare class HttpTransportError extends Error {
+    response?: IncomingMessage;
+    responseBody?: any;
+}
+export declare function translateError(message: string, body: any, response: IncomingMessage): HttpTransportError;

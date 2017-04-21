@@ -9,12 +9,13 @@ import * as dbg from 'debug';
 const debug = dbg('azure-iot-device.Client');
 import * as machina from 'machina';
 
-import { anHourFromNow, results, errors, Message } from 'azure-iot-common';
+import { anHourFromNow, results, errors, Message, Receiver } from 'azure-iot-common';
 import { ConnectionString } from './connection_string.js';
 import { SharedAccessSignature } from './shared_access_signature.js';
 import { BlobUploadClient } from './blob_upload';
 import { DeviceMethodRequest, DeviceMethodResponse } from './device_method';
 import { Twin } from './twin';
+import { Transport, StableConnectionTransport , DeviceMethodTransport, DeviceMethodReceiver, ClientConfig } from './interfaces';
 
 function safeCallback(callback?: (err?: Error, result?: any) => void, error?: Error, result?: any): void {
   if (callback) callback(error, result);
@@ -37,19 +38,19 @@ export class Client extends EventEmitter {
   static sasRenewalInterval: number = 2700000;
 
   // Can't be marked private because they are used in the Twin class.
-  _transport: any;
+  _transport: Transport;
   _twin: Twin;
 
   private _connectionString: string;
   private _useAutomaticRenewal: boolean;
   private _sasRenewalTimeout: number;
-  private _receiver: any;
+  private _receiver: Receiver;
   private _methodCallbackMap: any;
   private _fsm: machina.Fsm;
   private _disconnectHandler: (err?: Error, result?: any) => void;
   private blobUploadClient: BlobUploadClient; // TODO: wrong casing/naming convention
 
-  constructor(transport: any, connStr?: string, blobUploadClient?: BlobUploadClient) {
+  constructor(transport: Transport, connStr?: string, blobUploadClient?: BlobUploadClient) {
     /*Codes_SRS_NODE_DEVICE_CLIENT_05_001: [The Client constructor shall throw ReferenceError if the transport argument is falsy.]*/
     if (!transport) throw new ReferenceError('transport is \'' + transport + '\'');
 
@@ -104,7 +105,7 @@ export class Client extends EventEmitter {
 
       if (this._isImplementedInTransport('disconnect')) {
         /*Codes_SRS_NODE_DEVICE_CLIENT_16_001: [The `close` function shall call the transport's `disconnect` function if it exists.]*/
-        this._transport.disconnect((disconnectError, disconnectResult) => {
+        (this._transport as StableConnectionTransport).disconnect((disconnectError, disconnectResult) => {
           /*Codes_SRS_NODE_DEVICE_CLIENT_16_046: [The `close` method shall remove the listener that has been attached to the transport `disconnect` event.]*/
           this._transport.removeListener('disconnect', this._disconnectHandler);
           onDisconnected(disconnectError, disconnectResult);
@@ -128,7 +129,7 @@ export class Client extends EventEmitter {
 
             this._fsm.transition('connecting');
             if (this._isImplementedInTransport('connect')) {
-              this._transport.connect((connectErr, connectResult) => {
+              (this._transport as StableConnectionTransport).connect((connectErr, connectResult) => {
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_045: [If the transport successfully establishes a connection the `open` method shall subscribe to the `disconnect` event of the transport.]*/
                 this._transport.removeListener('disconnect', this._disconnectHandler); // remove the old one before adding a new -- this can happen when renewing SAS tokens
                 this._transport.on('disconnect', this._disconnectHandler);
@@ -224,7 +225,7 @@ export class Client extends EventEmitter {
                 safeCallback(sendEventCallback, err, result);
               });
             } else {
-              throw new errors.NotImplementedError('sendEvent is not supported with ' + this._transport.constructor.name);
+              throw new errors.NotImplementedError('sendEvent is not supported with this transport');
             }
           },
           sendEventBatch: (msgBatch, sendEventBatchCallback) => {
@@ -234,7 +235,7 @@ export class Client extends EventEmitter {
                 safeCallback(sendEventBatchCallback, err, result);
               });
             } else {
-              throw new errors.NotImplementedError('sendEventBatch is not supported with ' + this._transport.constructor.name);
+              throw new errors.NotImplementedError('sendEventBatch is not supported with this transport');
             }
           },
           updateSharedAccessSignature: (sharedAccessSignature, updateSasCallback) => {
@@ -260,12 +261,12 @@ export class Client extends EventEmitter {
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_035: [The updateSharedAccessSignature method shall call the `updateSasCallback` callback with an error object if an error happened while renewng the token.]*/
                 safeUpdateSasCallback(err);
               } else {
-                debug('sas token updated: ' + result.constructor.name + ' needToReconnect: ' + result.needToReconnect);
+                debug('sas token updated; needToReconnect: ' + result.needToReconnect);
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_033: [The updateSharedAccessSignature method shall reconnect the transport to the IoTHub service if it was connected before before the method is clled.]*/
                 /*Codes_SRS_NODE_DEVICE_CLIENT_16_034: [The `updateSharedAccessSignature` method shall not reconnect when the 'needToReconnect' property of the result argument of the callback is false.]*/
                 if (result.needToReconnect) {
                   this._fsm.transition('connecting');
-                  this._transport.connect((connectErr) => {
+                  (this._transport as StableConnectionTransport).connect((connectErr) => {
                     if (connectErr) {
                       safeUpdateSasCallback(connectErr);
                     } else {
@@ -293,7 +294,7 @@ export class Client extends EventEmitter {
                 safeCallback(completeCallback, err, result);
               });
             } else {
-              throw new errors.NotImplementedError('complete is not supported with ' + this._transport.constructor.name);
+              throw new errors.NotImplementedError('complete is not supported with this transport');
             }
           },
           abandon: (message, abandonCallback) => {
@@ -303,7 +304,7 @@ export class Client extends EventEmitter {
                 safeCallback(abandonCallback, err, result);
               });
             } else {
-              throw new errors.NotImplementedError('abandon is not supported with ' + this._transport.constructor.name);
+              throw new errors.NotImplementedError('abandon is not supported with this transport');
             }
           },
           reject: (message, rejectCallback) => {
@@ -313,7 +314,7 @@ export class Client extends EventEmitter {
                 safeCallback(rejectCallback, err, result);
               });
             } else {
-              throw new errors.NotImplementedError('reject is not supported with ' + this._transport.constructor.name);
+              throw new errors.NotImplementedError('reject is not supported with this transport');
             }
           },
           startMessageReceiver: () => {
@@ -634,7 +635,7 @@ export class Client extends EventEmitter {
     }
 
     // Codes_SRS_NODE_DEVICE_CLIENT_13_021: [ onDeviceMethod shall throw an Error if the underlying transport does not support device methods. ]
-    if (!(this._transport.sendMethodResponse)) {
+    if (!((this._transport as DeviceMethodTransport).sendMethodResponse)) {
       throw new Error('The transport for this client does not support device methods');
     }
 
@@ -646,7 +647,7 @@ export class Client extends EventEmitter {
 
   private _addMethodCallback(methodName: string, callback: (request: DeviceMethodRequest, response: DeviceMethodResponse) => void): void {
     const self = this;
-    this._receiver.onDeviceMethod(methodName, (message) => {
+    (this._receiver as DeviceMethodReceiver).onDeviceMethod(methodName, (message) => {
       // build the request object
       const request = new DeviceMethodRequest(
         message.requestId,
@@ -749,7 +750,7 @@ export class Client extends EventEmitter {
     /*Codes_SRS_NODE_DEVICE_CLIENT_05_005: [fromConnectionString shall derive and transform the needed parts from the connection string in order to create a new instance of transportCtor.]*/
     const cn = ConnectionString.parse(connStr);
 
-    let config: any = {
+    let config: ClientConfig = {
       host: cn.HostName,
       deviceId: cn.DeviceId,
       hubName: cn.HostName.split('.')[0]
@@ -784,7 +785,7 @@ export class Client extends EventEmitter {
     const sas = SharedAccessSignature.parse(sharedAccessSignature);
     const decodedUri = decodeURIComponent(sas.sr);
     const uriSegments = decodedUri.split('/');
-    const config = {
+    const config: ClientConfig = {
       host: uriSegments[0],
       deviceId: uriSegments[uriSegments.length - 1],
       hubName: uriSegments[0].split('.')[0],
