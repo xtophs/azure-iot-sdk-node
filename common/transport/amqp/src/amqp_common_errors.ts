@@ -7,7 +7,7 @@
 import { errors } from 'azure-iot-common';
 import { Errors as Amqp10Errors } from 'amqp10';
 
-export interface AmqpBaseError extends Error {
+export interface AmqpTransportError extends Error {
   amqpError?: Error;
 }
 
@@ -15,8 +15,8 @@ export interface AmqpBaseError extends Error {
 *- A custom error message to give context to the user.
 *- the AMQP error object itself]
 */
-export function translateError(message: string, amqpError: Amqp10Errors.BaseError): AmqpBaseError {
-  let error: AmqpBaseError;
+export function translateError(message: string, amqpError: Error): AmqpTransportError {
+  let error: AmqpTransportError;
 
   if ((amqpError as Amqp10Errors.ProtocolError).condition) {
     switch ((amqpError as Amqp10Errors.ProtocolError).condition) {

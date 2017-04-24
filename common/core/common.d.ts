@@ -15,9 +15,11 @@ export { SharedAccessSignature } from './lib/shared_access_signature';
 // Typescript only, used by other modules in azure-iot-sdk
 export interface X509 {
     // https://nodejs.org/api/tls.html#tls_tls_connect_options_callback
-    cert: string | string[] | Buffer | Buffer[];
-    key: string | Buffer;
+    cert?: string | string[] | Buffer | Buffer[];
+    key?: string | Buffer;
     passphrase?: string;
+    certFile?: string;
+    keyFile?: string;
 }
 
 export interface Receiver extends EventEmitter {

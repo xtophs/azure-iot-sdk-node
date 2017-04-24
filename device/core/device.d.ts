@@ -5,3 +5,4 @@ export { Client } from './lib/client';
 export { ConnectionString } from './lib/connection_string';
 export { Transport, ClientConfig } from './lib/interfaces';
 export { Message } from 'azure-iot-common';
+export { DeviceMethodRequest, DeviceMethodResponse } from './src/device_method';

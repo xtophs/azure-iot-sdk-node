@@ -9,7 +9,7 @@ import * as Promise from 'bluebird';
 import { AmqpMessage } from './amqp_message';
 import { AmqpReceiver } from './amqp_receiver';
 import { errors, results, Message } from 'azure-iot-common';
-import { AmqpBaseError } from './amqp_common_errors';
+import { AmqpTransportError } from './amqp_common_errors';
 
 import * as uuid from 'uuid';
 import * as dbg from 'debug';
@@ -336,7 +336,7 @@ export class Amqp {
           return null;
         })
         .catch((err) => {
-          let error: AmqpBaseError = new errors.NotConnectedError('AMQP: Could not create receiver');
+          let error: AmqpTransportError = new errors.NotConnectedError('AMQP: Could not create receiver');
           error.amqpError = err;
           /*Codes_SRS_NODE_COMMON_AMQP_16_021: [The `attachReceiverLink` method shall call the `done` callback with an `Error` object if the link object wasn't created successfully.]*/
           self._safeCallback(done, error);
@@ -389,7 +389,7 @@ export class Amqp {
         })
         .catch((err) => {
           /*Codes_SRS_NODE_IOTHUB_AMQPCOMMON_16_007: [If sendEvent encounters an error before it can send the request, it shall invoke the `done` callback function and pass the standard JavaScript Error object with a text description of the error (err.message).]*/
-          let error: AmqpBaseError = new errors.NotConnectedError('AMQP: Could not create sender');
+          let error: AmqpTransportError = new errors.NotConnectedError('AMQP: Could not create sender');
           error.amqpError = err;
           self._safeCallback(done, error);
         });

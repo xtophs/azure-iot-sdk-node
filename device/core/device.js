@@ -47,5 +47,7 @@ module.exports = {
   Client: require('./lib/client.js').Client,
   ConnectionString: require('./lib/connection_string.js').ConnectionString,
   Message: common.Message,
-  SharedAccessSignature: require('./lib/shared_access_signature.js').SharedAccessSignature
+  SharedAccessSignature: require('./lib/shared_access_signature.js').SharedAccessSignature,
+  DeviceMethodRequest: require('./lib/device_methods').DeviceMethodRequest,
+  DeviceMethodResponse: require('./lib/device_methods').DeviceMethodResponse
 };

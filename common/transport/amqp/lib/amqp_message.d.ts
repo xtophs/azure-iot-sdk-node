@@ -1,10 +1,4 @@
 import { Message } from 'azure-iot-common';
-declare module 'amqp10' {
-    class Type {
-        static uuid(uuidString: string): any;
-        static int(value: any): any;
-    }
-}
 /**
  * @class           module:azure-iot-amqp-base.AmqpMessage
  * @classdesc       AMQP-specific message class used to prepare a [azure-iot-common.Message]{@link module:azure-iot-common.Message}

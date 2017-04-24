@@ -1,5 +1,4 @@
-import { Errors as Amqp10Errors } from 'amqp10';
-export interface AmqpBaseError extends Error {
+export interface AmqpTransportError extends Error {
     amqpError?: Error;
 }
-export declare function translateError(message: string, amqpError: Amqp10Errors.BaseError): AmqpBaseError;
+export declare function translateError(message: string, amqpError: Error): AmqpTransportError;

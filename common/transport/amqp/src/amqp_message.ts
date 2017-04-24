@@ -6,18 +6,11 @@
 import { Message } from 'azure-iot-common';
 import * as amqp10 from 'amqp10';
 
-declare module 'amqp10' {
-  class Type {
-    static uuid(uuidString: string): any;
-    static int(value: any): any;
-  }
-}
-
 function encodeUuid(uuidString: string): any {
   const uuidRegEx = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
   let uuid;
   if (typeof uuidString === 'string' && uuidString.match(uuidRegEx)) {
-    uuid = amqp10.Type.uuid(uuidString);
+    uuid = (<any>amqp10).Type.uuid(uuidString);
   } else {
     uuid = uuidString;
   }
@@ -102,7 +95,7 @@ export class AmqpMessage {
           const item = props.getItem(index);
           if (!!item) {
             /*Codes_SRS_NODE_IOTHUB_AMQPMSG_16_013: [If one of the property key is `IoThub-status`, this property is reserved and shall be forced to an `int` AMQP type.]*/
-            const val = (item.key === 'IoThub-status') ? amqp10.Type.int(item.value) : item.value;
+            const val = (item.key === 'IoThub-status') ? (<any>amqp10).Type.int(item.value) : item.value;
             amqpMessage.applicationProperties[item.key] = val;
           }
         }
