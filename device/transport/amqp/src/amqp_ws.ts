@@ -4,7 +4,7 @@
 'use strict';
 
 import { Amqp } from './amqp.js';
-import { ClientConfig } from 'azure-iot-device';
+import { ClientConfig, Transport, StableConnectionTransport } from 'azure-iot-device';
 
 /**
  * @class module:azure-iot-device-amqp.AmqpWs
@@ -16,7 +16,7 @@ import { ClientConfig } from 'azure-iot-device';
  *
  * @param {Object}  config   Configuration object generated from the connection string by the client.
  */
-export class AmqpWs extends Amqp {
+export class AmqpWs extends Amqp implements Transport, StableConnectionTransport {
   constructor(config: ClientConfig) {
     super(config);
   }

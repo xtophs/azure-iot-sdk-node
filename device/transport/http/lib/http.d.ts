@@ -2,14 +2,14 @@
 import { EventEmitter } from 'events';
 import { results, Message } from 'azure-iot-common';
 import { HttpReceiver } from './http_receiver.js';
-import { Transport, ClientConfig } from 'azure-iot-device';
+import { Transport, BatchingTransport, ClientConfig } from 'azure-iot-device';
 /**
  * @class module:azure-iot-device-http.Http
  * @classdesc       Provide HTTP transport to the device [client]{@link module:azure-iot-device.Client}.
  *
  * @param   {Object}    config  Configuration object derived from the connection string by the client.
  */
-export declare class Http extends EventEmitter implements Transport {
+export declare class Http extends EventEmitter implements Transport, BatchingTransport {
     private _config;
     private _http;
     private _receiver;

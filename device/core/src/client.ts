@@ -15,7 +15,7 @@ import { SharedAccessSignature } from './shared_access_signature.js';
 import { BlobUploadClient } from './blob_upload';
 import { DeviceMethodRequest, DeviceMethodResponse } from './device_method';
 import { Twin } from './twin';
-import { Transport, StableConnectionTransport , DeviceMethodTransport, DeviceMethodReceiver, ClientConfig } from './interfaces';
+import { Transport, StableConnectionTransport , DeviceMethodTransport, BatchingTransport, DeviceMethodReceiver, ClientConfig } from './interfaces';
 
 function safeCallback(callback?: (err?: Error, result?: any) => void, error?: Error, result?: any): void {
   if (callback) callback(error, result);
@@ -231,7 +231,7 @@ export class Client extends EventEmitter {
           sendEventBatch: (msgBatch, sendEventBatchCallback) => {
             /*Codes_SRS_NODE_DEVICE_CLIENT_16_082: [The `sendEventBatch` method shall throw a `NotImplementedError` if the transport doesn't have that feature.]*/
             if (this._isImplementedInTransport('sendEventBatch')) {
-              this._transport.sendEventBatch(msgBatch, (err, result) => {
+              (this._transport as BatchingTransport).sendEventBatch(msgBatch, (err, result) => {
                 safeCallback(sendEventBatchCallback, err, result);
               });
             } else {

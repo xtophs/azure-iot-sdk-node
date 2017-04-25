@@ -9,7 +9,7 @@ import { endpoint, results, Message } from 'azure-iot-common';
 import { HttpReceiver } from './http_receiver.js';
 import { translateError } from './http_errors.js';
 import { IncomingMessage } from 'http';
-import { Transport, ClientConfig } from 'azure-iot-device';
+import { Transport, BatchingTransport, ClientConfig } from 'azure-iot-device';
 
 // tslint:disable-next-line:no-var-requires
 const packageJson = require('../package.json');
@@ -47,7 +47,7 @@ and either:
 or:
 - `x509` (object) an object with 3 properties: `cert`, `key` and `passphrase`, all strings, containing the necessary information to connect to the service.
 ]*/
-export class Http extends EventEmitter implements Transport {
+export class Http extends EventEmitter implements Transport, BatchingTransport {
   private _config: ClientConfig;
   private _http: Base;
   private _receiver: any;

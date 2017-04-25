@@ -1,30 +1,30 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+/// <reference types="node" />
+/// <reference types="mqtt" />
 import { EventEmitter } from 'events';
 import { Client as MqttClient } from 'mqtt';
-import { Receiver, Message } from 'azure-iot-common';
-
-declare class MqttReceiver extends EventEmitter implements Receiver {
-    // Want to have the same variables as the source
-    // tslint:disable-next-line:variable-name
-    constructor(mqttClient: MqttClient, topic_subscribe: string);
-
-    onDeviceMethod(methodName: string, callback: (message: MqttReceiver.MethodMessage) => void): void;
-
-    on(type: 'message', func: (msg: Message) => void): this;
-    on(type: 'errorReceived', func: (err: Error) => void): this;
-    on(type: string, func: Function): this;
+import { Receiver } from 'azure-iot-common';
+import { DeviceMethodRequest, DeviceMethodResponse } from 'azure-iot-device';
+/**
+ * @class           module:azure-iot-device-mqtt.MqttReceiver
+ * @classdesc       Object that is used to receive and settle messages from the server.
+ *
+ * @param  {Object}  mqttClient    MQTT Client object.
+ * @param  {string}  topicMessage  MQTT topic name for receiving C2D messages
+ * @throws {ReferenceError}        If either mqttClient or topicMessage is falsy
+ * @emits  message                 When a message is received
+ */
+/**
+ * @event module:azure-iot-device-mqtt.MqttReceiver#message
+ * @type {Message}
+ */
+export declare class MqttReceiver extends EventEmitter implements Receiver {
+    private _mqttClient;
+    private _topics;
+    constructor(mqttClient: MqttClient, topicMessage: string);
+    onDeviceMethod(methodName: string, callback: (methodRequest: DeviceMethodRequest, methodResponse: DeviceMethodResponse) => void): void;
+    private _setupSubscription(topic);
+    private _removeSubscription(topic);
+    private _dispatchMqttMessage(topic, payload);
+    private _onC2DMessage(topic, payload);
+    private _onDeviceMethod(topic, payload);
 }
-
-declare namespace MqttReceiver {
-    interface MethodMessage {
-        methods: { methodName: string; };
-        requestId: string;
-        properties: { [key: string]: string; };
-        body: Buffer;
-        verb: string;
-    }
-}
-
-export = MqttReceiver;

@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-import { ClientConfig, DeviceMethodResponse } from 'azure-iot-device';
+import { ClientConfig, DeviceMethodResponse, Transport, StableConnectionTransport } from 'azure-iot-device';
 import { results, Message, X509 } from 'azure-iot-common';
 import { AmqpReceiver } from './amqp_receiver';
 /**
@@ -9,7 +9,7 @@ import { AmqpReceiver } from './amqp_receiver';
  *            and receive messages to and from an IoT Hub instance, using the AMQP protocol.
  *
  */
-export declare class Amqp extends EventEmitter {
+export declare class Amqp extends EventEmitter implements Transport, StableConnectionTransport {
     protected _config: ClientConfig;
     private _deviceMethodClient;
     private _receiver;

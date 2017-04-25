@@ -1,5 +1,5 @@
 import { Amqp } from './amqp.js';
-import { ClientConfig } from 'azure-iot-device';
+import { ClientConfig, Transport, StableConnectionTransport } from 'azure-iot-device';
 /**
  * @class module:azure-iot-device-amqp.AmqpWs
  * @classdesc Constructs an {@linkcode AmqpWs} object that can be used on a device to send
@@ -10,7 +10,7 @@ import { ClientConfig } from 'azure-iot-device';
  *
  * @param {Object}  config   Configuration object generated from the connection string by the client.
  */
-export declare class AmqpWs extends Amqp {
+export declare class AmqpWs extends Amqp implements Transport, StableConnectionTransport {
     constructor(config: ClientConfig);
     protected _getConnectionUri(): string;
 }

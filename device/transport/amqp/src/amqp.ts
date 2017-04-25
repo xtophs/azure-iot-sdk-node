@@ -4,7 +4,7 @@
 'use strict';
 
 import { EventEmitter } from 'events';
-import { ClientConfig, DeviceMethodResponse } from 'azure-iot-device';
+import { ClientConfig, DeviceMethodResponse, Transport, StableConnectionTransport } from 'azure-iot-device';
 import { Amqp as BaseAmqpClient, translateError } from 'azure-iot-amqp-base';
 import { endpoint, SharedAccessSignature, errors, results, Message, X509 } from 'azure-iot-common';
 import { AmqpDeviceMethodClient } from './amqp_device_method_client';
@@ -41,7 +41,7 @@ host – (string) the fully-qualified DNS hostname of an IoT Hub
 hubName - (string) the name of the IoT Hub instance (without suffix such as .azure-devices.net).
 deviceId – (string) the identifier of a device registered with the IoT Hub
 sharedAccessSignature – (string) the shared access signature associated with the device registration.] */
-export class Amqp extends EventEmitter {
+export class Amqp extends EventEmitter implements Transport, StableConnectionTransport {
   protected _config: ClientConfig;
   private _deviceMethodClient: AmqpDeviceMethodClient;
   private _receiver: AmqpReceiver;
