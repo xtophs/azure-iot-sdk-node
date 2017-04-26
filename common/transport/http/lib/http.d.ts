@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { ClientRequest, IncomingMessage } from 'http';
 import { Message, X509 } from 'azure-iot-common';
+export declare type HttpMethodVerb = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export declare type HttpCallback = (err: Error, body?: string, response?: IncomingMessage) => void;
 /**
  * @class           module:azure-iot-http-base.Http
@@ -20,7 +21,7 @@ export declare class Http {
      *
      * @returns An HTTP request object.
      */
-    buildRequest(method: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE', path: string, httpHeaders: {
+    buildRequest(method: HttpMethodVerb, path: string, httpHeaders: {
         [key: string]: string | string[] | number;
     }, host: string, x509Options: X509 | HttpCallback, done?: HttpCallback): ClientRequest;
     /**

@@ -9,6 +9,8 @@ import { Message, X509 } from 'azure-iot-common';
 import dbg = require('debug');
 const debug = dbg('azure-iot-common.Http');
 
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
 export type HttpCallback = (err: Error, body?: string, response?: IncomingMessage) => void;
 
 /**
@@ -37,7 +39,7 @@ export class Http {
       x509Options - [optional] the x509 certificate, key and passphrase that are needed to connect to the service using x509 certificate authentication
       done - a callback that will be invoked when a completed response is returned from the server]*/
 
-  buildRequest (method: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE',
+  buildRequest (method: HttpMethod,
                 path: string,
                 httpHeaders: { [key: string]: string | string[] | number },
                 host: string,

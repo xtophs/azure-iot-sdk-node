@@ -11,6 +11,7 @@ export interface ConnectionString {
   HostName?: string;
   DeviceId?: string;
   SharedAccessKey?: string;
+  SharedAccessKeyName?: string;
   GatewayHostName?: string;
   x509?: string;
 }
