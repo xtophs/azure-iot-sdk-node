@@ -12,7 +12,7 @@
  */
 module.exports = {
   Client: require('./lib/client.js').Client,
-  ConnectionString: require('./lib/connection_string.js').ConnectionString,
+  ConnectionString: require('./lib/connection_string.js'),
   Registry: require('./lib/registry.js').Registry,
   SharedAccessSignature: require('./lib/shared_access_signature.js').SharedAccessSignature,
   Amqp: require('./lib/amqp.js').Amqp,

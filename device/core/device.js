@@ -48,6 +48,6 @@ module.exports = {
   ConnectionString: require('./lib/connection_string.js').ConnectionString,
   Message: common.Message,
   SharedAccessSignature: require('./lib/shared_access_signature.js').SharedAccessSignature,
-  DeviceMethodRequest: require('./lib/device_methods').DeviceMethodRequest,
-  DeviceMethodResponse: require('./lib/device_methods').DeviceMethodResponse
+  DeviceMethodRequest: require('./lib/device_method').DeviceMethodRequest,
+  DeviceMethodResponse: require('./lib/device_method').DeviceMethodResponse
 };
