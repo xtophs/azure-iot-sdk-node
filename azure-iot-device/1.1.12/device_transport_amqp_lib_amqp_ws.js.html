@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: device/transport/amqp/lib/amqp_ws.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    <h1 class="page-title">Source: device/transport/amqp/lib/amqp_ws.js</h1>
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+'use strict';
+var __extends = (this &amp;&amp; this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var amqp_js_1 = require("./amqp.js");
+/**
+ * @class module:azure-iot-device-amqp.AmqpWs
+ * @classdesc Constructs an {@linkcode AmqpWs} object that can be used on a device to send
+ *            and receive messages to and from an IoT Hub instance, using the AMQP protocol over secure websockets.
+ *            This class overloads the constructor of the base {@link module:azure-iot-device-amqp:Amqp} class from the AMQP transport, and inherits all methods from it.
+ *
+ * @augments module:azure-iot-device-amqp.Amqp
+ *
+ * @param {Object}  config   Configuration object generated from the connection string by the client.
+ */
+var AmqpWs = (function (_super) {
+    __extends(AmqpWs, _super);
+    function AmqpWs(config) {
+        return _super.call(this, config) || this;
+    }
+    AmqpWs.prototype._getConnectionUri = function () {
+        return 'wss://' + this._config.host + ':443/$iothub/websocket';
+    };
+    return AmqpWs;
+}(amqp_js_1.Amqp));
+exports.AmqpWs = AmqpWs;
+//# sourceMappingURL=amqp_ws.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-azure-iot-amqp-base.html">azure-iot-amqp-base</a></li><li><a href="module-azure-iot-common.html">azure-iot-common</a></li><li><a href="module-azure-iot-device.html">azure-iot-device</a></li><li><a href="module-azure-iot-device-amqp.html">azure-iot-device-amqp</a></li><li><a href="module-azure-iot-device-http.html">azure-iot-device-http</a></li><li><a href="module-azure-iot-device-mqtt.html">azure-iot-device-mqtt</a></li><li><a href="module-azure-iot-http-base.html">azure-iot-http-base</a></li></ul><h3>Classes</h3><ul><li><a href="module-azure-iot-amqp-base.Amqp.html">azure-iot-amqp-base.Amqp</a></li><li><a href="module-azure-iot-amqp-base.AmqpMessage.html">azure-iot-amqp-base.AmqpMessage</a></li><li><a href="module-azure-iot-amqp-base.AmqpReceiver.html">azure-iot-amqp-base.AmqpReceiver</a></li><li><a href="module-azure-iot-amqp-base.PutTokenOperation.html">azure-iot-amqp-base.PutTokenOperation</a></li><li><a href="module-azure-iot-amqp-base.PutTokenStatus.html">azure-iot-amqp-base.PutTokenStatus</a></li><li><a href="module-azure-iot-common.ArgumentError.html">azure-iot-common.ArgumentError</a></li><li><a href="module-azure-iot-common.ArgumentOutOfRangeError.html">azure-iot-common.ArgumentOutOfRangeError</a></li><li><a href="module-azure-iot-common.BadDeviceResponseError.html">azure-iot-common.BadDeviceResponseError</a></li><li><a href="module-azure-iot-common.DeviceAlreadyExistsError.html">azure-iot-common.DeviceAlreadyExistsError</a></li><li><a href="module-azure-iot-common.DeviceMaximumQueueDepthExceededError.html">azure-iot-common.DeviceMaximumQueueDepthExceededError</a></li><li><a href="module-azure-iot-common.DeviceMessageLockLostError.html">azure-iot-common.DeviceMessageLockLostError</a></li><li><a href="module-azure-iot-common.DeviceNotFoundError.html">azure-iot-common.DeviceNotFoundError</a></li><li><a href="module-azure-iot-common.DeviceTimeoutError.html">azure-iot-common.DeviceTimeoutError</a></li><li><a href="module-azure-iot-common.FormatError.html">azure-iot-common.FormatError</a></li><li><a href="module-azure-iot-common.GatewayTimeoutError.html">azure-iot-common.GatewayTimeoutError</a></li><li><a href="module-azure-iot-common.InvalidEtagError.html">azure-iot-common.InvalidEtagError</a></li><li><a href="module-azure-iot-common.InvalidOperationError.html">azure-iot-common.InvalidOperationError</a></li><li><a href="module-azure-iot-common.IoTHubSuspendedError.html">azure-iot-common.IoTHubSuspendedError</a></li><li><a href="module-azure-iot-common.Message.html">azure-iot-common.Message</a></li><li><a href="module-azure-iot-common.PreconditionFailedError.html">azure-iot-common.PreconditionFailedError</a></li><li><a href="module-azure-iot-common.SharedAccessSignature.html">azure-iot-common.SharedAccessSignature</a></li><li><a href="module-azure-iot-common.ThrottlingError.html">azure-iot-common.ThrottlingError</a></li><li><a href="module-azure-iot-common.TimeoutError.html">azure-iot-common.TimeoutError</a></li><li><a href="module-azure-iot-common.UnauthorizedError.html">azure-iot-common.UnauthorizedError</a></li><li><a href="module-azure-iot-device.Client.html">azure-iot-device.Client</a></li><li><a href="module-azure-iot-device-amqp.Amqp.html">azure-iot-device-amqp.Amqp</a></li><li><a href="module-azure-iot-device-amqp.AmqpWs.html">azure-iot-device-amqp.AmqpWs</a></li><li><a href="module-azure-iot-device-http.Http.html">azure-iot-device-http.Http</a></li><li><a href="module-azure-iot-device-http.HttpReceiver.html">azure-iot-device-http.HttpReceiver</a></li><li><a href="module-azure-iot-device-mqtt.Mqtt.html">azure-iot-device-mqtt.Mqtt</a></li><li><a href="module-azure-iot-http-base.Http.html">azure-iot-http-base.Http</a></li></ul><h3>Events</h3><ul><li><a href="module-azure-iot-amqp-base.AmqpReceiver.html#event:errorReceived">azure-iot-amqp-base.AmqpReceiver#errorReceived</a></li><li><a href="module-azure-iot-amqp-base.AmqpReceiver.html#event:message">azure-iot-amqp-base.AmqpReceiver#message</a></li><li><a href="module-azure-iot-device-http.HttpReceiver.html#event:errorReceived">azure-iot-device-http.HttpReceiver#errorReceived</a></li><li><a href="module-azure-iot-device-http.HttpReceiver.html#event:message">azure-iot-device-http.HttpReceiver#message</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu May 18 2017 17:41:12 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
