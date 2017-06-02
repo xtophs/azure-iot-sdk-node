@@ -38,6 +38,7 @@ var dbg = require("debug");
 var debug = dbg('amqp-common');
 var _putTokenSendingEndpoint = '$cbs';
 var _putTokenReceivingEndpoint = '$cbs';
+var _amqpClientError = 'client:errorReceived';
 /**
  * @class      module:azure-iot-amqp-base.PutTokenOperation
  * @classdesc  Describes a "put token" operation state: "put-token" operations are used to renew the CBS token and stay connected.
@@ -165,20 +166,28 @@ var Amqp = (function () {
             }
             this._amqp.policy.connect.options.sslOptions = sslOptions;
             var connectError_1 = null;
-            var connectErrorHander_1 = function (err) {
+            var connectErrorHandler_1 = function (err) {
                 connectError_1 = err;
             };
-            this._amqp.on('client:errorReceived', connectErrorHander_1);
+            var amqpErrorHandler_1 = function (err) {
+                debug('amqp10 error: ' + err.toString());
+                if (_this._disconnectHandler) {
+                    _this._disconnectHandler(err);
+                }
+            };
+            this._amqp.on(_amqpClientError, connectErrorHandler_1);
             this._amqp.connect(this.uri)
                 .then(function (result) {
                 debug('AMQP transport connected.');
                 _this._connected = true;
+                _this._amqp.on(_amqpClientError, amqpErrorHandler_1);
+                _this._amqp.removeListener(_amqpClientError, connectErrorHandler_1);
                 /*Codes_SRS_NODE_COMMON_AMQP_16_002: [The `connect` method shall establish a connection with the IoT hub instance and if given as argument call the `done` callback with a null error object in the case of success and a `results.Connected` object.]*/
                 _this._safeCallback(done, null, new azure_iot_common_1.results.Connected(result));
                 return null;
             })
                 .catch(function (err) {
-                _this._amqp.removeListener('client:errorReceived', connectErrorHander_1);
+                _this._amqp.removeListener(_amqpClientError, connectErrorHandler_1);
                 _this._connected = false;
                 /*Codes_SRS_NODE_COMMON_AMQP_16_003: [The `connect` method shall call the `done` callback if the connection fails.] */
                 _this._safeCallback(done, connectError_1 || err);
@@ -196,9 +205,10 @@ var Amqp = (function () {
      */
     Amqp.prototype.setDisconnectHandler = function (disconnectCallback) {
         var _this = this;
+        this._disconnectHandler = disconnectCallback;
         this._amqp.on('connection:closed', function () {
             _this._connected = false;
-            disconnectCallback(new Error('amqp10: connection closed'));
+            _this._disconnectHandler(new Error('amqp10: connection closed'));
         });
     };
     /**
@@ -207,6 +217,7 @@ var Amqp = (function () {
      * @param {Function}   done   Called when disconnected of if an error happened.
      */
     Amqp.prototype.disconnect = function (done) {
+        var _this = this;
         var self = this;
         /*Codes_SRS_NODE_COMMON_AMQP_16_034: [The `disconnect` method shall detach all open links before disconnecting the underlying AMQP client.]*/
         var openLinks = [];
@@ -225,7 +236,7 @@ var Amqp = (function () {
         }
         self._receivers = {};
         Promise.all(openLinks.map(function (link) { return link.detach(); }))
-            .then(this._amqp.disconnect.bind(this._amqp))
+            .then(function () { return _this._amqp.disconnect(); })
             .then(function (result) {
             self._connected = false;
             /*Codes_SRS_NODE_COMMON_AMQP_16_004: [The disconnect method shall call the done callback when the application/service has been successfully disconnected from the service] */
@@ -331,6 +342,12 @@ var Amqp = (function () {
             /*Codes_SRS_NODE_COMMON_AMQP_16_018: [The `attachReceiverLink` method shall call `createReceiver` on the `amqp10` client object.]*/
             self_1._amqp.createReceiver(endpoint, linkOptions)
                 .then(function (receiver) {
+                receiver.on('detached', function (detached) {
+                    debug('receiver link detached: ' + endpoint);
+                    if (self_1._receivers[endpoint]) {
+                        delete self_1._receivers[endpoint];
+                    }
+                });
                 self_1._amqp.removeListener('client:errorReceived', clientErrorHandler_1);
                 if (!connectionError_1) {
                     self_1._receivers[endpoint] = new amqp_receiver_1.AmqpReceiver(receiver);
@@ -381,6 +398,12 @@ var Amqp = (function () {
             /*Codes_SRS_NODE_COMMON_AMQP_16_013: [The `attachSenderLink` method shall call `createSender` on the `amqp10` client object.]*/
             self_2._amqp.createSender(endpoint, linkOptions)
                 .then(function (sender) {
+                sender.on('detached', function () {
+                    debug('sender link detached: ' + endpoint);
+                    if (self_2._senders[endpoint]) {
+                        delete self_2._senders[endpoint];
+                    }
+                });
                 self_2._amqp.removeListener('client:errorReceived', clientErrorHandler_2);
                 if (!connectionError_2) {
                     self_2._senders[endpoint] = sender;
@@ -682,7 +705,7 @@ exports.Amqp = Amqp;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu May 18 2017 17:41:13 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jun 02 2017 15:14:44 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
