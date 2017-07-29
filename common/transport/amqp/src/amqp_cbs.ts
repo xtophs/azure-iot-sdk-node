@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import * as machina from 'machina';
 import * as amqp10 from 'amqp10';
 import * as uuid from 'uuid';
@@ -49,7 +48,7 @@ class PutTokenStatus {
     timeoutTimer: number;
 }
 
-export class ClaimsBasedSecurityAgent extends EventEmitter {
+export class ClaimsBasedSecurityAgent {
   private static _putTokenSendingEndpoint: string = '$cbs';
   private static _putTokenReceivingEndpoint: string = '$cbs';
   private _amqp10Client: amqp10.AmqpClient;
@@ -65,8 +64,6 @@ export class ClaimsBasedSecurityAgent extends EventEmitter {
   }[];
 
   constructor(amqp10Client: amqp10.AmqpClient) {
-    super();
-
     this._errorHandler = (err: Error): void => {
       this._fsm.handle('detach', err);
     };

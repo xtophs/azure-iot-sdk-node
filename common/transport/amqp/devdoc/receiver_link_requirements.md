@@ -10,7 +10,7 @@ The `ReceiverLink` class implements a state machine that manages the underlying 
 
 ```typescript
 import * as amqp10 from 'amqp10';
-import { AmqpMessage } from './ampq_message';
+import { AmqpMessage } from './amqp_message';
 
 const linkAddress = 'exampleAddress';
 const amqp10Client = new amqp10.AmqpClient(null);
@@ -36,8 +36,6 @@ receiverLink.on('message', (msg) => {
 
 ### constructor(linkAddress: string, linkOptions: any, amqp10Client: amqp10.AmqpClient)
 
-**SRS_NODE_AMQP_RECEIVER_LINK_16_001: [** The `ReceiverLink` internal state machine shall be initialized in the `detached` state. **]**
-
 **SRS_NODE_AMQP_RECEIVER_LINK_16_002: [** The `ReceiverLink` class shall inherit from `EventEmitter`. **]**
 
 **SRS_NODE_AMQP_RECEIVER_LINK_16_003: [** The `ReceiverLink` class shall implement the `AmqpLink` interface. **]**
@@ -59,8 +57,6 @@ receiverLink.on('message', (msg) => {
 ### detach(): void
 
 **SRS_NODE_AMQP_RECEIVER_LINK_16_009: [** The `detach` method shall detach the link created by the `amqp10.AmqpClient` underlying object. **]**
-
-**SRS_NODE_AMQP_RECEIVER_LINK_16_010: [** The `detach` method shall return the state machine to the `detached` state. **]**
 
 ### accept(message: AmqpMessage, callback: (err?: Error, result?: results.MessageAccepted) => void): void
 
@@ -98,7 +94,7 @@ receiverLink.on('message', (msg) => {
 
 ### Events
 
-**SRS_NODE_AMQP_RECEIVER_LINK_16_011: [** If a `detached` or `errorReceived` event is emitted by the `ampq10` link object, the `ReceiverLink` object shall return to the `detached` state. **]**
+**SRS_NODE_AMQP_RECEIVER_LINK_16_011: [** If a `detached` or `errorReceived` event is emitted by the `amqp10` link object, the `ReceiverLink` object shall forward that error to the client. **]**
 
 **SRS_NODE_AMQP_RECEIVER_LINK_16_012: [** If a `message` event is emitted by the `amqp10` link object, the `ReceiverLink` object shall emit a `message` event with the same content. **]**
 

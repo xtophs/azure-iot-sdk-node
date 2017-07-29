@@ -131,7 +131,7 @@ Configures a `ReceiverLink` object to use the endpoint passed as a parameter and
 
 **SRS_NODE_COMMON_AMQP_16_040: [** The `putToken` method shall call the internal `ClaimsBasedSecurityAgent` instance `putToken` method with the same arguments. **]**
 
-**SRS_NODE_COMMON_AMQP_16_041: [** If the state machine is in a `detached` state, the `putToken` client shall connect the client and get into the `connected` state before proceeding with the nor **]**mal operations.
+**SRS_NODE_COMMON_AMQP_16_041: [** If the state machine is in a `detached` state, the `putToken` client shall connect the client and get into the `connected` state before proceeding with the normal operations. **]**
 
 ### All methods
 **SRS_NODE_COMMON_AMQP_16_011: [** All methods should treat the `done` callback argument as optional and not throw if it is not passed as argument. **]**

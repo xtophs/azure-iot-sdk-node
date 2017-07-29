@@ -169,16 +169,42 @@ export class Amqp {
         connecting: {
           connect: () => this._fsm.deferUntilTransition(),
           disconnect: () => this._fsm.deferUntilTransition(),
-          '*': () => this._fsm.deferUntilTransition('connected')
+          '*': () => this._fsm.deferUntilTransition()
         },
         connected: {
           connect: (callback) => callback(null, new results.Connected()),
           disconnect: (disconnectCallback) => {
             this._fsm.transition('disconnecting');
-            this._disconnect((err) => {
-              this._fsm.transition('disconnected');
-              disconnectCallback(err);
-            });
+
+            if (this._cbs) {
+              this._cbs.detach();
+            }
+
+            /*Codes_SRS_NODE_COMMON_AMQP_16_034: [The `disconnect` method shall detach all open links before disconnecting the underlying AMQP client.]*/
+            for (let senderEndpoint in this._senders) {
+              if (this._senders.hasOwnProperty(senderEndpoint)) {
+                this._senders[senderEndpoint].detach();
+                delete this._senders[senderEndpoint];
+              }
+            }
+
+            for (let receiverEndpoint in this._receivers) {
+              if (this._receivers.hasOwnProperty(receiverEndpoint)) {
+                this._receivers[receiverEndpoint].detach();
+                delete this._receivers[receiverEndpoint];
+              }
+            }
+
+            /*Codes_SRS_NODE_COMMON_AMQP_16_004: [The disconnect method shall call the done callback when the application/service has been successfully disconnected from the service] */
+            this._amqp.disconnect()
+                      .then(() => {
+                        this._fsm.transition('disconnected');
+                        this._safeCallback(disconnectCallback, null, new results.Disconnected());
+                      })
+                      .catch((err) => {
+                        this._fsm.transition('disconnected');
+                        this._safeCallback(disconnectCallback, err);
+                      });
           },
           initializeCBS: (callback) => {
             this._cbs = new ClaimsBasedSecurityAgent(this._amqp);
@@ -226,8 +252,7 @@ export class Amqp {
             }
           },
           attachReceiverLink: (endpoint: string, linkOptions: any, done: GenericAmqpBaseCallback): void => {
-            let receiverFsm = new ReceiverLink(endpoint, linkOptions, this._amqp);
-            this._receivers[endpoint] = receiverFsm;
+            this._receivers[endpoint] = new ReceiverLink(endpoint, linkOptions, this._amqp);
             this._receivers[endpoint].on('error', (err) => {
               debug('error on the receiver link for endpoint ' + endpoint);
               debug(err.toString());
@@ -307,38 +332,6 @@ export class Amqp {
    */
   disconnect(done: GenericAmqpBaseCallback): void {
     this._fsm.handle('disconnect', done);
-  }
-
-  _disconnect(done: GenericAmqpBaseCallback): void {
-    /*Codes_SRS_NODE_COMMON_AMQP_16_034: [The `disconnect` method shall detach all open links before disconnecting the underlying AMQP client.]*/
-    for (let senderEndpoint in this._senders) {
-      if (this._senders.hasOwnProperty(senderEndpoint)) {
-        this._senders[senderEndpoint].detach();
-        delete this._senders[senderEndpoint];
-      }
-    }
-    this._senders = {};
-
-    for (let receiverEndpoint in this._receivers) {
-      if (this._receivers.hasOwnProperty(receiverEndpoint)) {
-        this._receivers[receiverEndpoint].detach();
-        delete this._receivers[receiverEndpoint];
-      }
-    }
-    this._receivers = {};
-
-    if (this._cbs) {
-      this._cbs.detach();
-    }
-
-    /*Codes_SRS_NODE_COMMON_AMQP_16_004: [The disconnect method shall call the done callback when the application/service has been successfully disconnected from the service] */
-    this._amqp.disconnect()
-              .then(() => {
-                this._safeCallback(done, null, new results.Disconnected());
-              })
-              .catch((err) => {
-                this._safeCallback(done, err);
-              });
   }
 
   /**

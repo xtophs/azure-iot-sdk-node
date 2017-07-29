@@ -1,4 +1,4 @@
-import * as machina from 'machina';
+ import * as machina from 'machina';
 import * as amqp10 from 'amqp10';
 import * as dbg from 'debug';
 import { EventEmitter } from 'events';
@@ -50,7 +50,6 @@ export class SenderLink extends EventEmitter implements AmqpLink {
     };
 
     this._fsm = new machina.Fsm({
-      /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_001: [The `SenderLink` internal state machine shall be initialized in the `detached` state.]*/
       initialState: 'detached',
       states: {
         detached: {
@@ -78,10 +77,10 @@ export class SenderLink extends EventEmitter implements AmqpLink {
             }
 
             if (callback) {
-              /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_018: [If returning to the `detached` state because of an error that happened while trying to attach the link or send a message, the `callback` for this function shall be called with that error.]*/
+              /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_018: [If an error happened that caused the link to be detached while trying to attach the link or send a message, the `callback` for this function shall be called with that error.]*/
               callback(err);
             } else if (err) {
-              /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_016: [If returning to the `detached` state because of an error that didn't happen while trying to attach the link or send a message, the sender link shall call emit an `error` event with that error.]*/
+              /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_016: [If an error happened that caused the link to be detached, the sender link shall call emit an `error` event with that error.]*/
               this.emit('error', err);
             }
           },
@@ -153,10 +152,10 @@ export class SenderLink extends EventEmitter implements AmqpLink {
           _onEnter: (err) => {
             if (this._linkObject) {
               /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_009: [** The `detach` method shall detach the link created by the `amqp10.AmqpClient` underlying object.]*/
+              this._linkObject.removeAllListeners();
               this._linkObject.forceDetach();
               this._linkObject = null;
             }
-            /*Codes_SRS_NODE_AMQP_SENDER_LINK_16_017: [** The `detach` method shall return the state machine to the `detached` state.]*/
             this._fsm.transition('detached', null, err);
           },
           '*': () => this._fsm.deferUntilTransition('detached')

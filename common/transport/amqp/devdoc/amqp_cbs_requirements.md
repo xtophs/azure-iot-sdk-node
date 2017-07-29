@@ -1,16 +1,16 @@
-# ReceiverLink Requirements
+# ClaimsBasedSecurityAgent Requirements
 
 ## Overview
 
-The `ReceiverLink` class is internal to the SDK and shall be considered private. It shall not be used directly by clients of the SDK, who should instead rely on the higher-level constructs (`Client` classes provided by `azure-iot-device` and `azure-iothub`).
+The `ClaimsBasedSecurityAgent` class is internal to the SDK and shall be considered private. It shall not be used directly by clients of the SDK, who should instead rely on the higher-level constructs (`Client` classes provided by `azure-iot-device` and `azure-iothub`).
 
-The `ReceiverLink` class implements a state machine that manages the underlying `amqp10` link object used to receive messages from IoT Hub. It can be attached and detached manually, and will try to attach automatically if not already attached when setting up a message listener or trying to settle an existing message.
+The `ClaimsBasedSecurityAgent` class manages the links used to process CBS Authentication messages. It can be attached and detached manually, and will try to attach automatically if not already attached when a "put token" operation is performed.
 
 ## Example usage
 
 ```typescript
 import * as amqp10 from 'amqp10';
-import { ClaimsBasedSecurityAgent } from './ampq_cbs';
+import { ClaimsBasedSecurityAgent } from './amqp_cbs';
 
 const amqp10Client = new amqp10.AmqpClient(null);
 // the amqp10 client shall be connected before using it with the CBS agent.
@@ -34,11 +34,9 @@ cbs.attach((err) => {
 
 ### constructor(amqpClient)
 
-**SRS_NODE_AMQP_CBS_16_001: [** The `constructor` shall instanciate a `SenderLink` object for the `$cbs` endpoint using a custom policy `{encoder: function(body) { return body;}}` which forces the amqp layer to send the token as an amqp value in the body. **]**
+**SRS_NODE_AMQP_CBS_16_001: [** The `constructor` shall instantiate a `SenderLink` object for the `$cbs` endpoint using a custom policy `{encoder: function(body) { return body;}}` which forces the amqp layer to send the token as an amqp value in the body. **]**
 
-**SRS_NODE_AMQP_CBS_16_002: [** The `constructor` shall instanciate a `ReceiverLink` object for the `$cbs` endpoint. **]**
-
-**SRS_NODE_AMQP_CBS_16_017: [** The `ClaimsBasedSecurityAgent` class shall inherit from the native `EventEmitter` class. **]**
+**SRS_NODE_AMQP_CBS_16_002: [** The `constructor` shall instantiate a `ReceiverLink` object for the `$cbs` endpoint. **]**
 
 ### attach(callback)
 
@@ -54,7 +52,7 @@ cbs.attach((err) => {
 
 ### detach()
 
-**SRS_NODE_AMQP_CBS_16_008: [** `detach` shall detach both sender and receiver links and return the state machine to the `detached` state. **]**
+**SRS_NODE_AMQP_CBS_16_008: [** `detach` shall detach both sender and receiver links. **]**
 
 ### putToken(audience, token, callback)
 
@@ -89,7 +87,7 @@ and a body containing `<sasToken>`. **]**
 
 ### events
 
-**SRS_NODE_AMQP_CBS_16_016: [** If either the sender or receiver link emits an `error` event, the state machine should return to the `detached` state and detach the remaining links, if any. **]**
+**SRS_NODE_AMQP_CBS_16_016: [** If either the sender or receiver link emits an `error` event, remaining links shall be detached. **]**
 
 # $cbs listener
 

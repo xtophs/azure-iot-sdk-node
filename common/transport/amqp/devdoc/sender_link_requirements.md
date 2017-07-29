@@ -10,7 +10,7 @@ The `SenderLink` class implements a state machine that manages the underlying `a
 
 ```typescript
 import * as amqp10 from 'amqp10';
-import { AmqpMessage } from './ampq_message';
+import { AmqpMessage } from './amqp_message';
 
 const linkAddress = 'exampleAddress';
 const amqp10Client = new amqp10.AmqpClient(null);
@@ -32,8 +32,6 @@ senderLink.send(new AmqpMessage(''), linkAddress, (err) => {
 ## Public Interface
 
 ### constructor(linkAddress: string, linkOptions: any, amqp10Client: amqp10.AmqpClient)
-
-**SRS_NODE_AMQP_SENDER_LINK_16_001: [** The `SenderLink` internal state machine shall be initialized in the `detached` state. **]**
 
 **SRS_NODE_AMQP_SENDER_LINK_16_002: [** The `SenderLink` class shall inherit from `EventEmitter`. **]**
 
@@ -57,8 +55,6 @@ senderLink.send(new AmqpMessage(''), linkAddress, (err) => {
 
 **SRS_NODE_AMQP_SENDER_LINK_16_009: [** The `detach` method shall detach the link created by the `amqp10.AmqpClient` underlying object. **]**
 
-**SRS_NODE_AMQP_SENDER_LINK_16_017: [** The `detach` method shall return the state machine to the `detached` state. **]**
-
 ### send(message: AmqpMessage, callback: (err?: Error, result?: results.MessageEnqueued) => void): void
 
 **SRS_NODE_AMQP_SENDER_LINK_16_010: [** The `send` method shall use the link created by the underlying `amqp10.AmqpClient` to send the specified `message` to the IoT hub. **]**
@@ -71,18 +67,14 @@ senderLink.send(new AmqpMessage(''), linkAddress, (err) => {
 
 **SRS_NODE_AMQP_SENDER_LINK_16_014: [** If the link is detached while a message is being sent, the `callback` shall be called with an `Error` object describing the AMQP error that caused the detach to happen in the first place. **]**
 
-### Events
-
-**SRS_NODE_AMQP_SENDER_LINK_16_015: [** If a `detached` or `errorReceived` event is emitted by the `ampq10` link object, the `SenderLink` object shall return to the `detached` state. **]**
-
-### Internal state machine
-
-**SRS_NODE_AMQP_SENDER_LINK_16_016: [** If returning to the `detached` state because of an error that didn't happen while trying to attach the link or send a message, the sender link shall call emit an `error` event with that error. **]**
-
-**SRS_NODE_AMQP_SENDER_LINK_16_018: [** If returning to the `detached` state because of an error that happened while trying to attach the link or send a message, the `callback` for this function shall be called with that error. **]**
-
 **SRS_NODE_AMQP_SENDER_LINK_16_019: [** While the link isn't attached, the messages passed to the `send` method shall be queued. **]**
 
 **SRS_NODE_AMQP_SENDER_LINK_16_020: [** When the link gets attached, the messages shall be sent in the order they were queued. **]**
 
 **SRS_NODE_AMQP_SENDER_LINK_16_021: [** If the link fails to attach and there are messages in the queue, the callback for each message shall be called with the error that caused the detach in the first place. **]**
+
+### Events
+
+**SRS_NODE_AMQP_SENDER_LINK_16_016: [** If an error happened that caused the link to be detached, the sender link shall call emit an `error` event with that error. **]**
+
+**SRS_NODE_AMQP_SENDER_LINK_16_018: [** If an error happened that caused the link to be detached while trying to attach the link or send a message, the `callback` for this function shall be called with that error. **]**

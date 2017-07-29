@@ -10,16 +10,6 @@ var AmqpMessage = require('../lib/amqp_message.js').AmqpMessage;
 var CBS = require('../lib/amqp_cbs.js').ClaimsBasedSecurityAgent;
 
 describe('ClaimsBasedSecurityAgent', function() {
-  describe('#constructor', function() {
-    /*Tests_SRS_NODE_AMQP_CBS_16_017: [The `ClaimsBasedSecurityAgent` class shall inherit from the native `EventEmitter` class.]*/
-    it('inherits from EventEmitter', function() {
-      var cbs = new CBS({});
-      sinon.spy(cbs._senderLink, 'on');
-      sinon.spy(cbs._receiverLink, 'on');
-      assert.instanceOf(cbs, EventEmitter);
-    });
-  });
-
   describe('#attach', function() {
     /*Tests_SRS_NODE_AMQP_CBS_16_006: [If given as an argument, the `attach` method shall call `callback` with a standard `Error` object if any link fails to attach.]*/
     it('Calls its callback with an error if can NOT establish a sender link', function(testCallback) {

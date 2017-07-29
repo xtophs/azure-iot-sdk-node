@@ -40,12 +40,12 @@ export class ReceiverLink  extends EventEmitter implements AmqpLink {
     };
 
     this._fsm = new machina.Fsm({
-      /*Codes_SRS_NODE_AMQP_RECEIVER_LINK_16_001: [** The `ReceiverLink` internal state machine shall be initialized in the `detached` state.]*/
       initialState: 'detached',
       states: {
         detached: {
           _onEnter: (err) => {
             if (err) {
+              /*Codes_SRS_NODE_AMQP_RECEIVER_LINK_16_011: [If a `detached` or `errorReceived` event is emitted by the `amqp10` link object, the `ReceiverLink` object shall forward that error to the client.]*/
               this.emit('error', err);
             }
           },
@@ -108,7 +108,6 @@ export class ReceiverLink  extends EventEmitter implements AmqpLink {
               this._linkObject = null;
             }
 
-            /*Codes_SRS_NODE_AMQP_RECEIVER_LINK_16_010: [The `detach` method shall return the state machine to the `detached` state.]*/
             this._fsm.transition('detached', err);
           },
           '*': () => this._fsm.deferUntilTransition('detached')
