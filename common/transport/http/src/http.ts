@@ -5,7 +5,7 @@
 
 import { ClientRequest, IncomingMessage } from 'http';
 import { request, RequestOptions } from 'https';
-import { Message, X509 } from 'azure-iot-common';
+import { Message, X509, errors  } from 'azure-iot-common';
 import dbg = require('debug');
 const debug = dbg('azure-iot-common.Http');
 
@@ -76,6 +76,9 @@ export class Http {
       let responseBody = '';
       response.on('error', (err: Error): void => {
         done(err);
+      });
+      response.on('abort',(err: Error): void => {
+        done(new errors.OperationCancelledError());
       });
       response.on('data', (chunk: string | Buffer): void => {
         responseBody += chunk;

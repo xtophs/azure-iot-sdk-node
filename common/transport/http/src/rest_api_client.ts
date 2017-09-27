@@ -6,6 +6,7 @@
 import { anHourFromNow, errors, SharedAccessSignature } from 'azure-iot-common';
 import { Http as HttpBase } from './http';
 import  * as uuid from 'uuid';
+import { ClientRequest } from 'http';
 
 
 /**
@@ -68,7 +69,7 @@ export class RestApiClient {
    * @throws {ReferenceError} If the method or path arguments are falsy.
    * @throws {TypeError}      If the type of the requestBody is not a string when Content-Type is text/plain
    */
-  executeApiCall(method: HttpMethodVerb, path: string, headers: { [key: string]: any }, requestBody: any, timeout?: number | RestApiClient.ResponseCallback, done?: RestApiClient.ResponseCallback): void {
+  executeApiCall(method: HttpMethodVerb, path: string, headers: { [key: string]: any }, requestBody: any, timeout?: number | RestApiClient.ResponseCallback, done?: RestApiClient.ResponseCallback): ClientRequest {
     /*Codes_SRS_NODE_IOTHUB_REST_API_CLIENT_16_005: [The `executeApiCall` method shall throw a `ReferenceError` if the `method` argument is falsy.]*/
     if (!method) throw new ReferenceError('method cannot be \'' + method + '\'');
     /*Codes_SRS_NODE_IOTHUB_REST_API_CLIENT_16_006: [The `executeApiCall` method shall throw a `ReferenceError` if the `path` argument is falsy.]*/
@@ -85,7 +86,9 @@ export class RestApiClient {
     - Request-Id: <guid>
     - User-Agent: <version string>]*/
     let httpHeaders: any = headers || {};
-    httpHeaders.Authorization = (typeof(this._config.sharedAccessSignature) === 'string') ? this._config.sharedAccessSignature as string : (this._config.sharedAccessSignature as SharedAccessSignature).extend(anHourFromNow());
+    if (this._config.sharedAccessSignature) {
+      httpHeaders.Authorization = (typeof(this._config.sharedAccessSignature) === 'string') ? this._config.sharedAccessSignature as string : (this._config.sharedAccessSignature as SharedAccessSignature).extend(anHourFromNow());
+    }
     httpHeaders['Request-Id'] = uuid.v4();
     httpHeaders['User-Agent'] = this._userAgent;
 
@@ -142,6 +145,8 @@ export class RestApiClient {
     }
 
     request.end();
+
+    return request;
   }
 
   /**
@@ -253,5 +258,5 @@ export namespace RestApiClient {
         sharedAccessSignature: string | SharedAccessSignature;
     }
 
-    export type ResponseCallback = (err: Error, device?: any, response?: any) => void;
+    export type ResponseCallback = (err: Error, responseBody?: any, response?: any) => void;
 }
